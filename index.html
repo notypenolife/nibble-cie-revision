@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nibble - Cambridge AS Computer Science</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="brand.css" />
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <div class="brand-lockup"><span class="nibble-logo" aria-hidden="true"></span><span class="brand-word">Nibble</span></div><p class="eyebrow">One nibble at a time.</p><h1>What's today's bite?</h1><p class="hero-copy">Small bites. Big breakthroughs. Build Cambridge AS Computer Science confidence with calm, focused bites for Paper 1 and Paper 2.</p><div class="today-bite"><span class="nib-mascot"><span class="nib-topping"></span></span><div><strong>Today's Bite</strong><p class="small-text">Pick a chapter, take a Taste Test, and stop before it feels heavy.</p></div></div>
+    </div>
+    <div class="hero-panel">
+      <p class="metric-label">Today's Plate</p>
+      <p id="focusText" class="metric-value">All AS topics</p>
+      <p class="small-text">6 / 10 Bites Finished</p>
+    </div>
+  </header>
+
+  <nav class="top-nav" aria-label="Main navigation">
+    <button data-page="dashboard" class="active">Home</button>
+    <button data-page="learn">Bites</button>
+    <button data-page="flashcards">Snack Cards</button>
+    <button data-page="quiz">Taste Test</button>
+    <button data-page="practice">Practice</button>
+    <button data-page="syntax">Guide</button>
+    <button data-page="mistakes">Progress</button>
+  </nav>
+
+  <main>
+    <section class="filter-bar" aria-label="Paper filter">
+      <button data-filter="all" class="selected">All AS</button>
+      <button data-filter="paper1">Paper 1 Theory</button>
+      <button data-filter="paper2">Paper 2 Problem-solving</button>
+    </section>
+
+    <section id="dashboard" class="page active">
+      <div class="section-heading"><p class="eyebrow">Today's menu</p><h2>Choose a bite</h2></div>
+      <div id="topicGrid" class="topic-grid"></div>
+    </section>
+
+    <section id="learn" class="page">
+      <div class="section-heading"><p class="eyebrow">Bites</p><h2>Bite-sized notes</h2></div>
+      <div id="lessonList" class="lesson-list"></div>
+    </section>
+
+    <section id="flashcards" class="page">
+      <div class="section-heading"><p class="eyebrow">Memory Bites</p><h2>Snack Cards</h2></div>
+      <article class="flashcard" id="flashcard" tabindex="0">
+        <p id="flashPaper" class="tag">Paper 1</p>
+        <h3 id="flashQuestion"></h3>
+        <p id="flashAnswer"></p>
+      </article>
+      <div class="button-row"><button id="flipCardBtn" class="primary">Flip card</button><button id="nextCardBtn">Next card</button></div>
+    </section>
+
+    <section id="quiz" class="page">
+      <div class="section-heading"><p class="eyebrow">Taste Test</p><h2>Taste Test</h2></div>
+      <div id="quizBox" class="quiz-box"></div>
+      <div id="quizFeedback" class="feedback" hidden></div>
+      <div class="button-row"><button id="nextQuestionBtn">Next question</button><button id="restartQuizBtn">Restart quiz</button></div>
+      <p id="score" class="score"></p>
+    </section>
+
+    <section id="practice" class="page">
+      <div class="section-heading"><p class="eyebrow">Practice</p><h2>Practice Plate</h2></div>
+      <article class="practice-card">
+        <p id="practicePaper" class="tag">Paper 2</p>
+        <h3 id="practiceQuestion"></h3>
+        <textarea id="studentAnswer" placeholder="Type your answer or pseudocode here..."></textarea>
+        <div class="button-row"><button id="markPracticeBtn" class="primary">Check answer</button><button id="newPracticeBtn">New task</button></div>
+        <div id="practiceFeedback" class="feedback" hidden></div>
+      </article>
+    </section>
+
+    <section id="syntax" class="page">
+      <div class="section-heading"><p class="eyebrow">Paper 2</p><h2>Pseudocode pantry</h2></div>
+      <div class="two-column">
+        <pre><code>DECLARE total : INTEGER
+DECLARE name : STRING
+
+total <- 0
+
+IF mark >= 50 THEN
+   OUTPUT "Pass"
+ELSE
+   OUTPUT "Fail"
+ENDIF</code></pre>
+        <pre><code>FOR i <- 1 TO 10
+   OUTPUT i
+NEXT i
+
+WHILE NOT EOF(StudentFile)
+   READFILE StudentFile, Line
+ENDWHILE
+
+OPENFILE StudentFile FOR READ
+CLOSEFILE StudentFile</code></pre>
+      </div>
+    </section>
+
+    <section id="mistakes" class="page">
+      <div class="section-heading"><p class="eyebrow">Progress notes</p><h2>Progress</h2></div>
+      <ul class="mistake-list">
+        <li>Writing about Paper 2 algorithms when the question asks for Paper 1 theory definitions.</li>
+        <li>Using Python syntax instead of Cambridge-style pseudocode in Paper 2.</li>
+        <li>Forgetting closing keywords such as ENDIF, NEXT, ENDWHILE, or CLOSEFILE.</li>
+        <li>Giving a validation rule without saying what happens when input is invalid.</li>
+        <li>Confusing verification, validation, authentication, and authorisation.</li>
+        <li>Describing hardware vaguely instead of naming processor, memory, storage, buses, and registers where needed.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer><p>Nibble makes difficult concepts feel bite-sized, enjoyable and memorable. Edit data/site-data.js to add more bites.</p></footer>
+  <script src="data/site-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
