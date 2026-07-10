@@ -296,6 +296,13 @@ window.showLanding = showLanding;
 window.switchView = switchView;
 window.openAppView = openAppView;
 
+function setPublicTheme(view){
+  const landing = document.getElementById('landingPage');
+  if(!landing) return;
+  landing.classList.remove('landing-home', 'landing-learn', 'landing-practice', 'landing-progress', 'landing-profile');
+  landing.classList.add('landing-' + view);
+  document.querySelectorAll('.public-app-nav button').forEach(btn => btn.classList.toggle('active', btn.dataset.publicView === view));
+}
 function showAppError(message){
   const landing = document.getElementById('landingPage');
   const appPage = document.getElementById('appPage');
