@@ -1208,3 +1208,100 @@ body {
 .app-error h1 {
   margin-top: 0;
 }
+
+/* Full app upgrade: richer dashboards, achievements, settings, themes */
+.app-main { max-width: 1240px; }
+.hero-header p:last-child { margin-bottom: 0; }
+.expanded-card { min-height: 176px; }
+.dashboard-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.dashboard-grid small, .content-panel small, .chapter-strip small { color: rgba(47,42,38,0.62); font-weight: 700; }
+.two-column-section, .paper-map, .rich-profile { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 18px; }
+.content-panel, .achievement-card {
+  background: linear-gradient(145deg, rgba(255,255,255,0.88), rgba(255,248,241,0.76));
+  border: 1px solid rgba(216,184,148,0.42);
+  border-radius: 24px;
+  box-shadow: 0 18px 42px rgba(47,42,38,0.08), inset 0 1px 0 rgba(255,255,255,0.72);
+  padding: 24px;
+}
+.content-panel h2, .content-panel h3 { margin-top: 0; }
+.content-panel button, .chapter-row, .chapter-strip button, .theme-chip {
+  background: linear-gradient(145deg, #fffdfa, #fff0df);
+  border: 1px solid rgba(201,133,63,0.28);
+  border-radius: 18px;
+  color: var(--cocoa);
+  font-weight: 900;
+  padding: 12px 14px;
+}
+.chapter-strip { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.chapter-strip button { display: grid; gap: 6px; min-height: 112px; text-align: left; }
+.chapter-strip button span, .chapter-row span {
+  align-items: center;
+  background: rgba(255,217,102,0.42);
+  border-radius: 999px;
+  display: inline-flex;
+  height: 34px;
+  justify-content: center;
+  width: 34px;
+}
+.activity-list { display: grid; gap: 10px; }
+.activity-list div { align-items: center; border-top: 1px solid rgba(216,184,148,0.32); display: flex; justify-content: space-between; padding-top: 10px; }
+.compact-list { gap: 10px; }
+.chapter-row { align-items: center; display: grid; gap: 12px; grid-template-columns: auto 1fr auto; text-align: left; width: 100%; }
+.chapter-row.selected { border-color: rgba(140,203,94,0.62); box-shadow: 0 14px 26px rgba(140,203,94,0.14); }
+.chapter-row div { display: grid; gap: 4px; }
+.chapter-row small { display: block; }
+.chapter-row em { font-style: normal; }
+.lesson-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.rich-menu { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.exam-task textarea, .rich-profile input {
+  background: rgba(255,255,255,0.78);
+  border: 1px solid rgba(216,184,148,0.48);
+  border-radius: 16px;
+  color: var(--cocoa);
+  display: block;
+  margin: 8px 0 16px;
+  padding: 14px;
+  resize: vertical;
+  width: 100%;
+}
+.score-card h2 { font-size: clamp(3rem, 8vw, 6rem); line-height: 1; margin: 0; }
+.expanded-health { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.compact-mastery { background: transparent; border: 0; box-shadow: none; padding: 0; }
+.achievement-grid { display: grid; gap: 14px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.achievement-card { opacity: 0.62; }
+.achievement-card.unlocked { border-color: rgba(140,203,94,0.62); opacity: 1; }
+.achievement-card span {
+  background: radial-gradient(circle at 32% 24%, #fff 0 18%, #ffd966 19% 54%, #c9853f 55% 100%);
+  border-radius: 50%;
+  box-shadow: inset 5px 6px 10px rgba(255,255,255,0.42), 0 10px 18px rgba(47,42,38,0.12);
+  display: block;
+  height: 42px;
+  width: 42px;
+}
+.achievement-card h3 { margin-bottom: 6px; }
+.achievement-card strong { color: #5f8f43; }
+.theme-grid { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.theme-chip { align-items: center; display: flex; gap: 10px; text-transform: capitalize; }
+.theme-chip span { border-radius: 999px; display: inline-block; height: 28px; width: 44px; }
+.theme-chip.active { border-color: rgba(47,42,38,0.64); box-shadow: 0 12px 24px rgba(47,42,38,0.12); }
+.theme-cream span { background: linear-gradient(135deg, #fff8f1, #eef8e9, #eef5ff); }
+.theme-matcha span { background: linear-gradient(135deg, #fff8f1, #dff1d1, #8ccb5e); }
+.theme-blueberry span { background: linear-gradient(135deg, #fff8f1, #eaf2ff, #6c8ef5); }
+.theme-peach span { background: linear-gradient(135deg, #fff8f1, #ffe1c7, #ffb38a); }
+.theme-cocoa span { background: linear-gradient(135deg, #fff8f1, #d8b894, #6f3d20); }
+body[data-theme="matcha"] .app-page { background: linear-gradient(180deg, #fff8f1 0%, #f7fbef 24%, #edf8e5 50%, #dff1d1 100%) !important; }
+body[data-theme="blueberry"] .app-page { background: linear-gradient(180deg, #fff8f1 0%, #f4f8ff 24%, #eaf2ff 50%, #dfeaff 100%) !important; }
+body[data-theme="peach"] .app-page { background: linear-gradient(180deg, #fff8f1 0%, #fff3df 24%, #ffe8d3 58%, #ffdcc0 100%) !important; }
+body[data-theme="cocoa"] .app-page { background: linear-gradient(180deg, #fff8f1 0%, #f7ece5 24%, #ead9cf 58%, #d8b894 100%) !important; }
+body[data-theme="cream"] .app-page { background: linear-gradient(180deg, #fff8f1 0%, #fff3e8 18%, #f5f4df 38%, #eef8e9 56%, #eef5ff 76%, #fff1df 100%) !important; }
+
+@media (max-width: 980px) {
+  .dashboard-grid, .expanded-health, .achievement-grid, .chapter-strip, .rich-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .two-column-section, .paper-map, .rich-profile, .lesson-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  .dashboard-grid, .expanded-health, .achievement-grid, .chapter-strip, .rich-menu, .theme-grid { grid-template-columns: 1fr; }
+  .chapter-row { grid-template-columns: auto 1fr; }
+  .chapter-row em { grid-column: 2; }
+}
+
