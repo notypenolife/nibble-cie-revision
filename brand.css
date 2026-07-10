@@ -921,3 +921,95 @@ body {
 .landing-page[hidden] {
   display: none !important;
 }
+
+/* Public topbar visible gradients */
+.site-header {
+  gap: 18px;
+}
+
+.public-app-nav {
+  align-items: center;
+  background: rgba(255,255,255,0.68);
+  border: 1px solid rgba(216,184,148,0.44);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.76), 0 10px 24px rgba(47,42,38,0.08);
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+  padding: 5px;
+}
+
+.public-app-nav button {
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  color: rgba(47,42,38,0.72);
+  font-weight: 900;
+  padding: 10px 14px;
+}
+
+.public-app-nav button.active,
+.public-app-nav button:hover {
+  background: linear-gradient(145deg, #fffdfa, #fff0df);
+  box-shadow: 0 8px 18px rgba(47,42,38,0.12), inset 0 1px 0 rgba(255,255,255,0.86);
+  color: var(--ganache);
+}
+
+.landing-page {
+  transition: background 260ms ease;
+}
+
+.landing-home {
+  background:
+    radial-gradient(circle at 80% 12%, rgba(255,217,102,0.22), transparent 25%),
+    radial-gradient(circle at 14% 76%, rgba(201,133,63,0.13), transparent 24%),
+    linear-gradient(135deg, #fff8f1 0%, #fff0df 52%, #f7dfc4 100%) !important;
+}
+
+.landing-learn {
+  background:
+    radial-gradient(circle at 82% 18%, rgba(140,203,94,0.24), transparent 27%),
+    radial-gradient(circle at 8% 78%, rgba(189,231,157,0.22), transparent 24%),
+    linear-gradient(135deg, #fbfff7 0%, #edf9e5 50%, #dff1d1 100%) !important;
+}
+
+.landing-practice {
+  background:
+    radial-gradient(circle at 78% 18%, rgba(108,142,245,0.22), transparent 26%),
+    radial-gradient(circle at 10% 82%, rgba(173,202,255,0.24), transparent 26%),
+    linear-gradient(135deg, #f7fbff 0%, #eaf2ff 50%, #dfeaff 100%) !important;
+}
+
+.landing-progress {
+  background:
+    radial-gradient(circle at 82% 16%, rgba(255,179,138,0.24), transparent 24%),
+    radial-gradient(circle at 12% 78%, rgba(255,217,102,0.2), transparent 26%),
+    linear-gradient(135deg, #fffaf1 0%, #ffeddc 52%, #ffe1c7 100%) !important;
+}
+
+.landing-profile {
+  background:
+    radial-gradient(circle at 80% 16%, rgba(223,49,80,0.12), transparent 24%),
+    radial-gradient(circle at 12% 80%, rgba(216,184,148,0.22), transparent 26%),
+    linear-gradient(135deg, #fff8f5 0%, #f8ece5 52%, #ead9cf 100%) !important;
+}
+
+@media (max-width: 900px) {
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .public-app-nav {
+    border-radius: 22px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(70px, 1fr));
+    margin-left: 0;
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  .public-app-nav button {
+    padding: 10px 8px;
+  }
+}
