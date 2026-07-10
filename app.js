@@ -1,4 +1,4 @@
-﻿const DATA = window.CIE_DATA;
+const DATA = window.CIE_DATA;
 const STORAGE_KEY = 'nibbleLearnerProgressV4';
 const COURSE_PAPER = 'paper2';
 const COURSE_CHAPTER_IDS = ['ch9', 'ch10', 'ch11', 'ch12'];
@@ -133,7 +133,7 @@ function renderHome(){
       <button class="link-button" onclick="showLanding()">Public site</button>
     </header>
     <section class="today-app-card">
-      <div class="dessert-orbit" aria-hidden="true"><span class="sweet-object icecream"></span><span class="sweet-object cupcake"></span><span class="sweet-object cookie"></span></div>
+      <div class="home-dessert-cluster" aria-hidden="true"><span class="home-sweet scoop"></span><span class="home-sweet cupcake"></span><span class="home-sweet cookie"></span></div>
       <div><p class="eyebrow">${paperName()}</p><h2>${escapeText(chapter.title)}</h2><p>${escapeText(chapter.summary)}</p><span>5-10 min</span></div>
       <button class="primary" onclick="startChapter('${chapter.id}')">Start Bite</button>
     </section>
