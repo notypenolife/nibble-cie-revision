@@ -1305,3 +1305,109 @@ body[data-theme="cream"] .app-page { background: linear-gradient(180deg, #fff8f1
   .chapter-row em { grid-column: 2; }
 }
 
+
+/* Exam Prep section */
+.app-exam {
+  background: linear-gradient(180deg, #fff8f1 0%, #f4f8ff 28%, #eef8e9 58%, #fff0df 100%) !important;
+}
+.exam-hero {
+  align-items: center;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr auto;
+  margin-bottom: 18px;
+}
+.exam-stats {
+  align-items: center;
+  display: grid;
+  gap: 4px 14px;
+  grid-template-columns: auto auto;
+  min-width: 180px;
+}
+.exam-stats strong {
+  color: var(--ganache);
+  font-family: Poppins, Inter, sans-serif;
+  font-size: 2.6rem;
+  line-height: 1;
+}
+.exam-controls {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 18px;
+}
+.exam-controls label {
+  color: var(--cocoa);
+  font-weight: 900;
+}
+.exam-controls select {
+  background: rgba(255,255,255,0.82);
+  border: 1px solid rgba(216,184,148,0.46);
+  border-radius: 14px;
+  color: var(--cocoa);
+  display: block;
+  margin-top: 8px;
+  padding: 12px;
+  width: 100%;
+}
+.topic-chip-grid {
+  display: grid;
+  gap: 10px;
+}
+.topic-chip-grid button {
+  display: grid;
+  gap: 3px;
+  text-align: left;
+}
+.exam-practice-list {
+  display: grid;
+  gap: 14px;
+}
+.exam-practice-list article,
+.paper-library article {
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(216,184,148,0.36);
+  border-radius: 18px;
+  padding: 18px;
+}
+.exam-practice-list textarea {
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(216,184,148,0.44);
+  border-radius: 14px;
+  color: var(--cocoa);
+  margin: 10px 0;
+  padding: 12px;
+  resize: vertical;
+  width: 100%;
+}
+.paper-library {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.paper-library article {
+  display: grid;
+  gap: 10px;
+}
+.paper-library span,
+.paper-library p {
+  font-size: 0.88rem;
+}
+.paper-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.paper-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+@media (max-width: 980px) {
+  .exam-hero,
+  .exam-controls,
+  .paper-library {
+    grid-template-columns: 1fr;
+  }
+}
+
