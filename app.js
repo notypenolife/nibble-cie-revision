@@ -1,11 +1,13 @@
 ﻿const DATA = window.CIE_DATA;
-const STORAGE_KEY = 'nibbleLearnerProgressV3';
+const STORAGE_KEY = 'nibbleLearnerProgressV4';
+const COURSE_PAPER = 'paper2';
+const COURSE_CHAPTER_IDS = ['ch9', 'ch10', 'ch11', 'ch12'];
+
 let learner = loadLearner();
 let activeView = 'home';
-let selectedPaper = 'paper2';
-let selectedChapterId = DATA.chapters[0]?.id;
+let selectedChapterId = COURSE_CHAPTER_IDS[0];
+let biteStep = 'overview';
 let currentQuizIndex = 0;
-let currentPracticeIndex = 0;
 
 function defaultLearner(){
   return {
@@ -13,12 +15,12 @@ function defaultLearner(){
     signedIn: false,
     xp: 0,
     streak: 0,
-    goalXp: 10,
+    goalXp: 25,
     lastActiveDate: '',
-    completed: {},
+    reviewedCards: {},
     quizAttempts: [],
-    practiceAttempts: [],
-    theme: 'cream'
+    completedBites: {},
+    practiceAttempts: []
   };
 }
 
@@ -29,32 +31,45 @@ function loadLearner(){
 
 function saveLearner(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(learner)); }
 function todayKey(){ return new Date().toISOString().slice(0, 10); }
-function chapterById(id){ return DATA.chapters.find(chapter => chapter.id === id) || DATA.chapters[0]; }
-function paperName(paper){ return paper === 'paper1' ? 'Paper 1' : 'Paper 2'; }
+function courseChapters(){ return DATA.chapters.filter(chapter => COURSE_CHAPTER_IDS.includes(chapter.id)); }
+function chapterById(id){ return courseChapters().find(chapter => chapter.id === id) || courseChapters()[0]; }
+function paperName(){ return 'AS 9618 Paper 2'; }
 function escapeText(value){ return String(value || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-function chaptersForPaper(paper){ return DATA.chapters.filter(chapter => chapter.paper === paper); }
-function chapterMastery(chapterId){
-  const completed = learner.completed[chapterId] ? 45 : 0;
-  const quiz = learner.quizAttempts.filter(a => a.chapter === chapterId && a.correct).length * 12;
-  const practice = learner.practiceAttempts.filter(a => a.chapter === chapterId).reduce((sum, a) => sum + Math.round(a.score * 20), 0);
-  return Math.min(100, completed + quiz + practice);
-}
-function overallMastery(){
-  if(!DATA.chapters.length) return 0;
-  return Math.round(DATA.chapters.reduce((sum, chapter) => sum + chapterMastery(chapter.id), 0) / DATA.chapters.length);
-}
-function weakChapter(){
-  return [...DATA.chapters].sort((a, b) => chapterMastery(a.id) - chapterMastery(b.id))[0];
-}
-function todayChapter(){
-  return DATA.chapters.find(chapter => !learner.completed[chapter.id]) || weakChapter() || DATA.chapters[0];
-}
+function chapterCards(chapterId){ return DATA.flashcards.filter(card => card.chapter === chapterId); }
+function chapterQuestions(chapterId){ return DATA.quizQuestions.filter(question => question.chapter === chapterId); }
+function courseQuestions(){ return DATA.quizQuestions.filter(question => COURSE_CHAPTER_IDS.includes(question.chapter)); }
+function coursePractice(){ return DATA.practiceTasks.filter(task => COURSE_CHAPTER_IDS.includes(task.chapter)); }
+
 function recordActivity(xp){
   const today = todayKey();
-  if(learner.lastActiveDate !== today){ learner.streak = (learner.streak || 0) + 1; }
+  if(learner.lastActiveDate !== today) learner.streak = (learner.streak || 0) + 1;
   learner.lastActiveDate = today;
   learner.xp += xp;
   saveLearner();
+}
+
+function chapterMastery(chapterId){
+  const cards = chapterCards(chapterId);
+  const reviewed = cards.filter(card => learner.reviewedCards[card.id]).length;
+  const cardScore = cards.length ? (reviewed / cards.length) * 25 : 0;
+  const quizAttempts = learner.quizAttempts.filter(attempt => attempt.chapter === chapterId);
+  const correct = quizAttempts.filter(attempt => attempt.correct).length;
+  const quizScore = quizAttempts.length ? Math.min(40, (correct / Math.max(1, quizAttempts.length)) * 40) : 0;
+  const completionScore = learner.completedBites[chapterId] ? 35 : 0;
+  return Math.min(100, Math.round(cardScore + quizScore + completionScore));
+}
+
+function overallMastery(){
+  const chapters = courseChapters();
+  return Math.round(chapters.reduce((sum, chapter) => sum + chapterMastery(chapter.id), 0) / chapters.length);
+}
+
+function todayChapter(){
+  return courseChapters().find(chapter => !learner.completedBites[chapter.id]) || weakChapter();
+}
+
+function weakChapter(){
+  return [...courseChapters()].sort((a, b) => chapterMastery(a.id) - chapterMastery(b.id))[0];
 }
 
 function openLogin(){ document.getElementById('loginModal').hidden = false; }
@@ -89,20 +104,21 @@ function renderHome(){
   const chapter = todayChapter();
   const weak = weakChapter();
   const mastery = overallMastery();
-  const goalPercent = Math.min(100, Math.round((learner.xp % learner.goalXp) / learner.goalXp * 100));
+  const todayXp = learner.xp % learner.goalXp;
+  const goalPercent = Math.min(100, Math.round((todayXp / learner.goalXp) * 100));
   document.getElementById('homeView').innerHTML = `
     <header class="app-header">
       <div><p class="eyebrow">Good evening ${escapeText(learner.name)}</p><h1>Today's Bite</h1></div>
       <button class="link-button" onclick="showLanding()">Public site</button>
     </header>
     <section class="today-app-card">
-      <div class="today-dessert-thumb" aria-hidden="true"><img src="assets/nibble-dessert-art.png" alt=""></div>
-      <div><p class="eyebrow">${paperName(chapter.paper)}</p><h2>${escapeText(chapter.title)}</h2><p>${escapeText(chapter.summary)}</p><span>6 min</span></div>
-      <button class="primary" onclick="startChapter('${chapter.id}')">Continue</button>
+      <div class="dessert-orbit" aria-hidden="true"><span class="sweet-object icecream"></span><span class="sweet-object cupcake"></span><span class="sweet-object cookie"></span></div>
+      <div><p class="eyebrow">${paperName()}</p><h2>${escapeText(chapter.title)}</h2><p>${escapeText(chapter.summary)}</p><span>5-10 min</span></div>
+      <button class="primary" onclick="startChapter('${chapter.id}')">Start Bite</button>
     </section>
     <section class="metric-grid">
-      <article><p>Current streak</p><strong>🔥 ${learner.streak}</strong></article>
-      <article><p>Today's goal</p><strong>${learner.xp % learner.goalXp} / ${learner.goalXp} XP</strong><div class="mini-bar"><span style="width:${goalPercent}%"></span></div></article>
+      <article><p>Current streak</p><strong>${learner.streak} days</strong></article>
+      <article><p>Today's goal</p><strong>${todayXp} / ${learner.goalXp} XP</strong><div class="mini-bar"><span style="width:${goalPercent}%"></span></div></article>
       <article><p>Overall mastery</p><strong>${mastery}%</strong><div class="mini-bar"><span style="width:${mastery}%"></span></div></article>
     </section>
     <section class="continue-grid">
@@ -113,14 +129,15 @@ function renderHome(){
 }
 
 function renderLearn(){
-  const chapters = chaptersForPaper(selectedPaper);
+  const chapters = courseChapters();
   document.getElementById('learnView').innerHTML = `
-    <header class="app-header"><div><p class="eyebrow">Learn</p><h1>${paperName(selectedPaper)}</h1></div><div class="segmented"><button class="${selectedPaper === 'paper1' ? 'active' : ''}" onclick="setPaper('paper1')">Paper 1</button><button class="${selectedPaper === 'paper2' ? 'active' : ''}" onclick="setPaper('paper2')">Paper 2</button></div></header>
+    <header class="app-header"><div><p class="eyebrow">Learn</p><h1>Paper 2</h1></div><p class="course-pill">Sections 9-12 only</p></header>
     <div class="topic-list">
       ${chapters.map(chapter => `
-        <article class="learn-topic">
-          <div><p class="eyebrow">Chapter ${chapter.number}</p><h2>${escapeText(chapter.title)}</h2><p>${escapeText(chapter.summary)}</p></div>
-          <div class="topic-actions"><strong>${chapterMastery(chapter.id)}%</strong><div class="mini-bar"><span style="width:${chapterMastery(chapter.id)}%"></span></div><button onclick="startChapter('${chapter.id}')">Open</button></div>
+        <article class="learn-topic ${selectedChapterId === chapter.id ? 'selected' : ''}">
+          <span class="topic-sweet" aria-hidden="true"></span>
+          <div><p class="eyebrow">Section ${chapter.number}</p><h2>${escapeText(chapter.title)}</h2><p>${escapeText(chapter.summary)}</p></div>
+          <div class="topic-actions"><strong>${chapterMastery(chapter.id)}%</strong><div class="mini-bar"><span style="width:${chapterMastery(chapter.id)}%"></span></div><button onclick="startChapter('${chapter.id}')">Start Bite</button></div>
         </article>
       `).join('')}
     </div>
@@ -133,28 +150,45 @@ function renderLessonDetail(){
   const container = document.getElementById('lessonDetail');
   if(!container) return;
   const chapter = chapterById(selectedChapterId);
-  const flashcards = DATA.flashcards.filter(card => card.chapter === chapter.id).slice(0, 3);
+  const cards = chapterCards(chapter.id);
+  const question = chapterQuestions(chapter.id)[0] || courseQuestions()[0];
+  const stepClass = step => biteStep === step ? 'active' : '';
+  let body = '';
+
+  if(biteStep === 'overview'){
+    body = `<p>${escapeText(chapter.summary)}</p><ul>${chapter.revise.map(item => `<li>${escapeText(item)}</li>`).join('')}</ul><button class="primary" onclick="setBiteStep('cards')">Start training</button>`;
+  }
+
+  if(biteStep === 'cards'){
+    body = `<div class="card-row">${cards.map(card => `<article><h3>${escapeText(card.question)}</h3><p>${escapeText(card.answer)}</p><button onclick="reviewCard('${card.id}')">Reviewed</button></article>`).join('') || '<p>No cards yet for this bite.</p>'}</div><button class="primary" onclick="setBiteStep('quiz')">Go to mini quiz</button>`;
+  }
+
+  if(biteStep === 'quiz'){
+    body = `<div class="quiz-panel"><h3>${escapeText(question.question)}</h3>${question.options.map(option => `<button class="quiz-option" onclick="answerBiteQuiz('${question.id}', '${escapeText(option).replace(/'/g, "\\'")}')">${escapeText(option)}</button>`).join('')}</div><div id="biteFeedback" class="feedback" hidden></div>`;
+  }
+
+  if(biteStep === 'done'){
+    body = `<div class="completion-card"><span class="sweet-object cupcake"></span><h3>Bite finished</h3><p>You earned XP and updated your mastery for this topic.</p><button onclick="switchView('home')">Back home</button></div>`;
+  }
+
   container.innerHTML = `
-    <p class="eyebrow">${paperName(chapter.paper)} / ${chapter.title}</p>
+    <p class="eyebrow">${paperName()} / Section ${chapter.number}</p>
     <h2>${escapeText(chapter.title)}</h2>
-    <div class="bite-steps"><span>Read</span><span>Example</span><span>Mini quiz</span><span>Done</span></div>
-    <p>${escapeText(chapter.summary)}</p>
-    <ul>${chapter.revise.map(item => `<li>${escapeText(item)}</li>`).join('')}</ul>
-    <div class="card-row">${flashcards.map(card => `<article><h3>${escapeText(card.question)}</h3><p>${escapeText(card.answer)}</p></article>`).join('')}</div>
-    <p><strong>Exam tip:</strong> ${escapeText(chapter.examTip)}</p>
-    <button class="primary" onclick="completeChapter('${chapter.id}')">Done +15 XP</button>
+    <div class="bite-steps"><button class="${stepClass('overview')}" onclick="setBiteStep('overview')">Read</button><button class="${stepClass('cards')}" onclick="setBiteStep('cards')">Cards</button><button class="${stepClass('quiz')}" onclick="setBiteStep('quiz')">Mini quiz</button><button class="${stepClass('done')}" onclick="finishBite('${chapter.id}')">Done</button></div>
+    ${body}
+    <p><strong>Exam tip:</strong> ${escapeText(chapter.examTip || 'Use official Cambridge pseudocode conventions and show your working clearly.')}</p>
   `;
 }
 
 function renderPractice(){
   document.getElementById('practiceView').innerHTML = `
-    <header class="app-header"><div><p class="eyebrow">Practice</p><h1>Choose your practice</h1></div></header>
+    <header class="app-header"><div><p class="eyebrow">Exam Prep</p><h1>Practice</h1></div><p class="course-pill">Paper 2: 2 hours, 75 marks</p></header>
     <div class="practice-menu">
-      <button onclick="startQuickQuiz()">Quick Quiz</button>
-      <button onclick="startMockExam()">Mock Exam</button>
-      <button onclick="startChapter('${todayChapter().id}')">Daily Bite</button>
-      <button onclick="startChapter('${weakChapter().id}')">Weak Topics</button>
-      <button onclick="randomPractice()">Random</button>
+      <button onclick="startQuickQuiz()"><span class="mini-sweet"></span>Quick Quiz</button>
+      <button onclick="startMockExam()"><span class="mini-sweet"></span>Mock Exam</button>
+      <button onclick="startChapter('${todayChapter().id}')"><span class="mini-sweet"></span>Daily Bite</button>
+      <button onclick="startChapter('${weakChapter().id}')"><span class="mini-sweet"></span>Weak Topics</button>
+      <button onclick="randomPractice()"><span class="mini-sweet"></span>Random</button>
     </div>
     <section id="practiceStage" class="practice-stage"></section>
   `;
@@ -166,12 +200,12 @@ function renderProgress(){
   document.getElementById('progressView').innerHTML = `
     <header class="app-header"><div><p class="eyebrow">Progress</p><h1>Your learning health</h1></div></header>
     <section class="health-grid">
-      <article><p>Current streak</p><strong>🔥 ${learner.streak}</strong></article>
+      <article><p>Current streak</p><strong>${learner.streak} days</strong></article>
       <article><p>Mastery</p><strong>${mastery}%</strong><div class="mini-bar"><span style="width:${mastery}%"></span></div></article>
       <article><p>Study time</p><strong>${Math.max(1, Math.round(answered * 0.08))}h</strong></article>
       <article><p>Questions answered</p><strong>${answered}</strong></article>
     </section>
-    <section class="mastery-list">${DATA.chapters.map(chapter => `<div><span>${escapeText(chapter.title)}</span><strong>${chapterMastery(chapter.id)}%</strong><div class="mini-bar"><span style="width:${chapterMastery(chapter.id)}%"></span></div></div>`).join('')}</section>
+    <section class="mastery-list">${courseChapters().map(chapter => `<div><span>${escapeText(chapter.title)}</span><strong>${chapterMastery(chapter.id)}%</strong><div class="mini-bar"><span style="width:${chapterMastery(chapter.id)}%"></span></div></div>`).join('')}</section>
   `;
 }
 
@@ -179,54 +213,73 @@ function renderProfile(){
   document.getElementById('profileView').innerHTML = `
     <header class="app-header"><div><p class="eyebrow">Profile</p><h1>${escapeText(learner.name)}</h1></div></header>
     <section class="profile-panel">
-      <article><h2>Settings</h2><p>Theme: Cream</p><p>Notifications: planned</p><p>Subscription: Free prototype</p></article>
-      <article><h2>Achievements</h2><div class="achievement-row"><span>🍞 Loop Lover</span><span>🍙 Array Chef</span><span>🍰 Perfect Score</span></div></article>
+      <article><h2>Settings</h2><p>Theme: glossy dessert</p><p>Notifications: planned</p><p>Subscription: Free prototype</p></article>
+      <article><h2>Achievements</h2><div class="achievement-row"><span>Loop Lover</span><span>Array Chef</span><span>Perfect Score</span></div></article>
       <button onclick="resetLocalProgress()">Reset local progress</button>
     </section>
   `;
 }
 
-function setPaper(paper){ selectedPaper = paper; renderLearn(); }
-function startChapter(chapterId){ selectedChapterId = chapterId; const chapter = chapterById(chapterId); selectedPaper = chapter.paper; switchView('learn'); }
-function completeChapter(chapterId){ learner.completed[chapterId] = new Date().toISOString(); recordActivity(15); renderApp(); }
+function startChapter(chapterId){
+  selectedChapterId = chapterId;
+  biteStep = 'overview';
+  switchView('learn');
+  setTimeout(() => document.getElementById('lessonDetail')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+}
+function setBiteStep(step){ biteStep = step; renderLessonDetail(); }
+function reviewCard(cardId){ learner.reviewedCards[cardId] = new Date().toISOString(); recordActivity(2); renderLessonDetail(); }
+function finishBite(chapterId){ learner.completedBites[chapterId] = new Date().toISOString(); recordActivity(15); biteStep = 'done'; renderApp(); }
+
+function answerBiteQuiz(questionId, option){
+  const question = courseQuestions().find(q => q.id === questionId);
+  const correct = question && option === question.answer;
+  learner.quizAttempts.unshift({ id: questionId, chapter: question.chapter, correct, date: new Date().toISOString() });
+  learner.quizAttempts = learner.quizAttempts.slice(0, 60);
+  recordActivity(correct ? 8 : 3);
+  const feedback = document.getElementById('biteFeedback');
+  feedback.hidden = false;
+  feedback.innerHTML = `<h3>${correct ? 'Nice bite' : 'Almost there'}</h3><p><strong>Answer:</strong> ${escapeText(question.answer)}</p><p>${escapeText(question.explanation)}</p><p><strong>${escapeText(question.examTip)}</strong></p><button class="primary" onclick="finishBite('${question.chapter}')">Finish bite</button>`;
+}
 
 function startQuickQuiz(){
-  const questions = DATA.quizQuestions;
+  const questions = courseQuestions();
   const q = questions[currentQuizIndex % questions.length];
   const chapter = chapterById(q.chapter);
-  document.getElementById('practiceStage').innerHTML = `<p class="eyebrow">Quick Quiz / ${chapter.title}</p><h2>${escapeText(q.question)}</h2>${q.options.map(option => `<button class="quiz-option" onclick="answerQuiz('${escapeText(option).replace(/'/g, "\\'")}')">${escapeText(option)}</button>`).join('')}`;
+  document.getElementById('practiceStage').innerHTML = `<p class="eyebrow">Quick Quiz / ${escapeText(chapter.title)}</p><h2>${escapeText(q.question)}</h2>${q.options.map(option => `<button class="quiz-option" onclick="answerPracticeQuiz('${q.id}', '${escapeText(option).replace(/'/g, "\\'")}')">${escapeText(option)}</button>`).join('')}`;
 }
-function answerQuiz(option){
-  const q = DATA.quizQuestions[currentQuizIndex % DATA.quizQuestions.length];
+function answerPracticeQuiz(questionId, option){
+  const q = courseQuestions().find(question => question.id === questionId);
   const correct = option === q.answer;
-  learner.quizAttempts.unshift({ chapter: q.chapter, correct, date: new Date().toISOString() });
-  learner.quizAttempts = learner.quizAttempts.slice(0, 50);
+  learner.quizAttempts.unshift({ id: q.id, chapter: q.chapter, correct, date: new Date().toISOString() });
+  learner.quizAttempts = learner.quizAttempts.slice(0, 60);
   recordActivity(correct ? 8 : 3);
   document.getElementById('practiceStage').innerHTML = `<div class="feedback"><h2>${correct ? 'Nice bite' : 'Almost there'}</h2><p><strong>Answer:</strong> ${escapeText(q.answer)}</p><p>${escapeText(q.explanation)}</p><p><strong>${escapeText(q.examTip)}</strong></p><button onclick="nextQuiz()">Next</button></div>`;
 }
 function nextQuiz(){ currentQuizIndex++; startQuickQuiz(); }
-function startMockExam(){ document.getElementById('practiceStage').innerHTML = '<div class="feedback"><h2>Mock Exam</h2><p>Planned for the next build: timed Paper 1 and Paper 2 sets with review mode.</p></div>'; }
-function randomPractice(){ currentQuizIndex = Math.floor(Math.random() * DATA.quizQuestions.length); startQuickQuiz(); }
+function startMockExam(){ document.getElementById('practiceStage').innerHTML = '<div class="feedback"><h2>Mock Exam</h2><p>Planned next: generated Paper 2 tests that keep selected question IDs for review. Full mock: 2 hours, 75 marks.</p></div>'; }
+function randomPractice(){ currentQuizIndex = Math.floor(Math.random() * courseQuestions().length); startQuickQuiz(); }
 function resetLocalProgress(){ learner = { ...defaultLearner(), signedIn: true, name: learner.name }; saveLearner(); renderApp(); }
 
-window.setPaper = setPaper;
 window.startChapter = startChapter;
-window.completeChapter = completeChapter;
+window.setBiteStep = setBiteStep;
+window.reviewCard = reviewCard;
+window.finishBite = finishBite;
+window.answerBiteQuiz = answerBiteQuiz;
 window.startQuickQuiz = startQuickQuiz;
 window.startMockExam = startMockExam;
 window.randomPractice = randomPractice;
-window.answerQuiz = answerQuiz;
+window.answerPracticeQuiz = answerPracticeQuiz;
 window.nextQuiz = nextQuiz;
 window.resetLocalProgress = resetLocalProgress;
 window.showLanding = showLanding;
+window.switchView = switchView;
 
 document.getElementById('getStartedBtn').addEventListener('click', requireApp);
 document.getElementById('loginTopBtn').addEventListener('click', requireApp);
 document.querySelectorAll('.app-nav button').forEach(button => button.addEventListener('click', () => switchView(button.dataset.view)));
 document.getElementById('loginForm').addEventListener('submit', event => {
   event.preventDefault();
-  const name = document.getElementById('learnerName').value.trim() || 'James';
-  learner.name = name;
+  learner.name = document.getElementById('learnerName').value.trim() || 'Learner';
   learner.signedIn = true;
   saveLearner();
   closeLogin();
@@ -234,4 +287,3 @@ document.getElementById('loginForm').addEventListener('submit', event => {
 });
 
 showLanding();
-
