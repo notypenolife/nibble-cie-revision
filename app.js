@@ -296,30 +296,57 @@ window.showLanding = showLanding;
 window.switchView = switchView;
 window.openAppView = openAppView;
 
-document.getElementById('getStartedBtn').addEventListener('click', requireApp);
-document.getElementById('loginTopBtn').addEventListener('click', requireApp);
-document.querySelectorAll('.app-nav button').forEach(button => button.addEventListener('click', () => switchView(button.dataset.view)));
-document.querySelectorAll('.public-app-nav button').forEach(button => button.addEventListener('click', () => openAppView(button.dataset.publicView)));
-document.querySelectorAll('.public-app-nav button').forEach(button => button.addEventListener('mouseenter', () => setPublicTheme(button.dataset.publicView)));
-function setPublicTheme(view){
+function showAppError(message){
   const landing = document.getElementById('landingPage');
-  if(!landing) return;
-  landing.classList.remove('landing-home', 'landing-learn', 'landing-practice', 'landing-progress', 'landing-profile');
-  landing.classList.add('landing-' + view);
-  document.querySelectorAll('.public-app-nav button').forEach(btn => btn.classList.toggle('active', btn.dataset.publicView === view));
+  const appPage = document.getElementById('appPage');
+  if(landing) landing.hidden = true;
+  if(appPage) {
+    appPage.hidden = false;
+    appPage.innerHTML = `<main class="app-main"><section class="app-error"><h1>Nibble needs a refresh</h1><p>${escapeText(message)}</p><button class="primary" onclick="window.location.reload()">Refresh</button></section></main>`;
+  }
 }
-document.getElementById('loginForm').addEventListener('submit', event => {
-  event.preventDefault();
-  learner.name = document.getElementById('learnerName').value.trim() || 'Learner';
-  learner.signedIn = true;
-  saveLearner();
-  closeLogin();
-  enterApp();
-});
 
-setPublicTheme('home');
-showLanding();
+function bindAppEvents(){
+  document.getElementById('getStartedBtn')?.addEventListener('click', requireApp);
+  document.getElementById('loginTopBtn')?.addEventListener('click', requireApp);
+  document.querySelectorAll('.app-nav button').forEach(button => button.addEventListener('click', () => switchView(button.dataset.view)));
+  document.querySelectorAll('.public-app-nav button').forEach(button => button.addEventListener('click', () => openAppView(button.dataset.publicView)));
+  document.querySelectorAll('.public-app-nav button').forEach(button => button.addEventListener('mouseenter', () => setPublicTheme(button.dataset.publicView)));
 
+  document.getElementById('loginForm')?.addEventListener('submit', event => {
+    event.preventDefault();
+    learner.name = document.getElementById('learnerName').value.trim() || 'Learner';
+    learner.signedIn = true;
+    saveLearner();
+    closeLogin();
+    const pendingView = sessionStorage.getItem('nibblePendingView');
+    if(pendingView){
+      sessionStorage.removeItem('nibblePendingView');
+      activeView = pendingView;
+    }
+    enterApp();
+    switchView(activeView);
+  });
+}
 
+function bootApp(){
+  try {
+    if(!DATA || !Array.isArray(DATA.chapters) || courseChapters().length === 0){
+      throw new Error('The lesson data did not load.');
+    }
+    bindAppEvents();
+    setPublicTheme('home');
+    if(learner.signedIn){
+      activeView = activeView || 'home';
+      enterApp();
+      switchView(activeView);
+    } else {
+      showLanding();
+    }
+  } catch(error) {
+    console.error(error);
+    showAppError(error.message || 'The app could not start.');
+  }
+}
 
-
+bootApp();
