@@ -77,6 +77,7 @@ function closeLogin(){ document.getElementById('loginModal').hidden = true; }
 function enterApp(){
   document.getElementById('landingPage').hidden = true;
   document.getElementById('appPage').hidden = false;
+  setAppTheme(activeView);
   renderApp();
 }
 function showLanding(){
@@ -85,8 +86,16 @@ function showLanding(){
 }
 function requireApp(){ learner.signedIn ? enterApp() : openLogin(); }
 
+function setAppTheme(view){
+  const appPage = document.getElementById('appPage');
+  if(!appPage) return;
+  appPage.classList.remove('app-home', 'app-learn', 'app-practice', 'app-progress', 'app-profile');
+  appPage.classList.add('app-' + view);
+}
+
 function switchView(view){
   activeView = view;
+  setAppTheme(view);
   document.querySelectorAll('.app-view').forEach(section => section.classList.toggle('active', section.id === view + 'View'));
   document.querySelectorAll('.app-nav button').forEach(button => button.classList.toggle('active', button.dataset.view === view));
   renderApp();
@@ -287,3 +296,5 @@ document.getElementById('loginForm').addEventListener('submit', event => {
 });
 
 showLanding();
+
+
