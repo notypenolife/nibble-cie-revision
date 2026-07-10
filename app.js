@@ -124,7 +124,7 @@ function applyTheme(){
 function setAppTheme(view){
   const appPage = document.getElementById('appPage');
   if(!appPage) return;
-  appPage.classList.remove('app-home', 'app-learn', 'app-practice', 'app-progress', 'app-profile');
+  appPage.classList.remove('app-home', 'app-learn', 'app-practice', 'app-exam', 'app-progress', 'app-profile');
   appPage.classList.add('app-' + view);
   applyTheme();
 }
@@ -359,6 +359,114 @@ function renderProfile(){
     </section>
     <section class="content-panel"><p class="eyebrow">Achievements</p><div class="achievement-grid">${achievementDefinitions().map(renderAchievement).join('')}</div></section>
   `;
+}
+
+
+function examData(){ return window.NIBBLE_EXAM_DATA || { papers: [], topics: [], practice: [] }; }
+function examPapers(){ return examData().papers || []; }
+function examTopics(){ return examData().topics || []; }
+function examPractice(){ return examData().practice || []; }
+
+function renderExam(){
+  const container = document.getElementById('examView');
+  if(!container) return;
+  const papers = examPapers();
+  const topics = examTopics();
+  const practice = examPractice();
+  const years = [...new Set(papers.map(paper => paper.year).filter(Boolean))].sort((a, b) => b - a);
+  container.innerHTML = `
+    <header class="app-header">
+      <div><p class="eyebrow">Exam Preparation</p><h1>Past Paper Kitchen</h1><p>Browse papers, practise by topic, and build easy, normal or hard test plates.</p></div>
+      <p class="course-pill">${papers.length} papers indexed</p>
+    </header>
+    <section class="exam-hero content-panel">
+      <div><p class="eyebrow">Question bank setup</p><h2>${papers.length} paper entries paired with mark schemes</h2><p>The PDF library is indexed from your Exam Papers folder. The practice cards below are generated topic drills, ready to be expanded with real extracted past-paper questions.</p></div>
+      <div class="exam-stats"><strong>${topics.length}</strong><span>topics</span><strong>${practice.length}</strong><span>practice cards</span></div>
+    </section>
+    <section class="exam-controls content-panel">
+      <label>Paper<select id="examPaperFilter" onchange="renderExamLibrary()"><option value="all">All papers</option><option value="Paper 1">Paper 1</option><option value="Paper 2">Paper 2</option><option value="Paper 3">Paper 3</option><option value="Paper 4">Paper 4</option></select></label>
+      <label>Year<select id="examYearFilter" onchange="renderExamLibrary()"><option value="all">All years</option>${years.map(year => `<option value="${year}">${year}</option>`).join('')}</select></label>
+      <label>Topic<select id="examTopicFilter" onchange="renderExamPracticeSet()"><option value="all">All topics</option>${topics.map(topic => `<option value="${topic.id}">${escapeText(topic.title)}</option>`).join('')}</select></label>
+      <label>Difficulty<select id="examDifficultyFilter" onchange="renderExamPracticeSet()"><option value="all">All levels</option><option value="easy">Easy</option><option value="normal">Normal</option><option value="hard">Hard</option></select></label>
+    </section>
+    <section class="two-column-section">
+      <article class="content-panel"><p class="eyebrow">Practice by topic</p><div id="examPracticeSet"></div></article>
+      <article class="content-panel"><p class="eyebrow">Topic map</p><div class="topic-chip-grid">${topics.map(topic => `<button onclick="chooseExamTopic('${topic.id}')"><strong>${escapeText(topic.title)}</strong><small>${escapeText(topic.paper)} / ${escapeText(topic.chapter)}</small></button>`).join('')}</div></article>
+    </section>
+    <section class="content-panel"><p class="eyebrow">Past paper library</p><div id="examLibrary"></div></section>
+  `;
+  renderExamPracticeSet();
+  renderExamLibrary();
+}
+
+function renderExamLibrary(){
+  const paperFilter = document.getElementById('examPaperFilter')?.value || 'all';
+  const yearFilter = document.getElementById('examYearFilter')?.value || 'all';
+  const list = examPapers().filter(paper => (paperFilter === 'all' || paper.paper === paperFilter) && (yearFilter === 'all' || String(paper.year) === yearFilter)).slice(0, 48);
+  const target = document.getElementById('examLibrary');
+  if(!target) return;
+  target.innerHTML = `<div class="paper-library">${list.map(paper => `
+    <article>
+      <div><strong>${escapeText(paper.title)}</strong><span>${escapeText(paper.paper || 'Paper')} ${paper.variant ? 'variant ' + escapeText(paper.variant) : ''}</span></div>
+      <p>${escapeText(paper.questionPaper)}</p>
+      <div class="paper-actions"><button onclick="showPaperDetails('${paper.id}')">Details</button><button onclick="copyPaperPath('${paper.id}', 'qp')">Question PDF</button><button ${paper.markScheme ? '' : 'disabled'} onclick="copyPaperPath('${paper.id}', 'ms')">Mark scheme</button></div>
+    </article>`).join('') || '<p>No papers match this filter.</p>'}</div>`;
+}
+
+function renderExamPracticeSet(){
+  const topicFilter = document.getElementById('examTopicFilter')?.value || 'all';
+  const difficultyFilter = document.getElementById('examDifficultyFilter')?.value || 'all';
+  const list = examPractice().filter(item => (topicFilter === 'all' || item.topic === topicFilter) && (difficultyFilter === 'all' || item.difficulty === difficultyFilter));
+  const target = document.getElementById('examPracticeSet');
+  if(!target) return;
+  target.innerHTML = `<div class="exam-practice-list">${list.map(item => `
+    <article>
+      <p class="eyebrow">${escapeText(item.difficulty)} / ${item.marks} marks</p>
+      <h3>${escapeText(item.question)}</h3>
+      <textarea id="examAnswer-${item.id}" rows="4" placeholder="Try the question here..."></textarea>
+      <button class="primary" onclick="markExamPractice('${item.id}')">Check answer</button>
+      <div id="examFeedback-${item.id}" class="feedback" hidden></div>
+    </article>`).join('') || '<p>No generated practice cards match this filter yet.</p>'}</div>`;
+}
+
+function chooseExamTopic(topicId){
+  const select = document.getElementById('examTopicFilter');
+  if(select) select.value = topicId;
+  renderExamPracticeSet();
+}
+
+function markExamPractice(id){
+  const item = examPractice().find(practice => practice.id === id);
+  if(!item) return;
+  const answer = document.getElementById('examAnswer-' + id)?.value || '';
+  const upper = answer.toUpperCase();
+  const points = item.markPoints || [];
+  const matched = points.filter(point => upper.includes(String(point).split(' ')[0].toUpperCase()) || upper.includes(String(point).toUpperCase()));
+  const score = points.length ? matched.length / points.length : 0;
+  learner.practiceAttempts.unshift({ id, chapter: item.topic, score, matched, date: new Date().toISOString(), examPrep: true });
+  learner.practiceAttempts = learner.practiceAttempts.slice(0, 100);
+  recordActivity(Math.max(4, Math.round(score * 14)), { questions: 1, minutes: 5 });
+  const feedback = document.getElementById('examFeedback-' + id);
+  feedback.hidden = false;
+  feedback.innerHTML = `<h3>${score >= 0.75 ? 'Strong answer' : 'Almost there'}</h3><p><strong>Estimated score:</strong> ${Math.round(score * 100)}%</p><p><strong>Answer:</strong> ${escapeText(item.answer)}</p><p><strong>Mark points:</strong> ${points.map(escapeText).join(', ')}</p><p><strong>Exam tip:</strong> ${escapeText(item.examTip)}</p>`;
+  renderProgress();
+  renderProfile();
+}
+
+function showPaperDetails(id){
+  const paper = examPapers().find(item => item.id === id);
+  if(!paper) return;
+  const target = document.getElementById('examLibrary');
+  const note = `<div class="feedback"><h3>${escapeText(paper.title)}</h3><p><strong>Question paper:</strong> ${escapeText(paper.localQuestionPaper || paper.questionPaper)}</p><p><strong>Mark scheme:</strong> ${escapeText(paper.localMarkScheme || paper.markScheme || 'Not paired yet')}</p><p>This is indexed metadata. The next upgrade can extract question text from selected PDFs and tag it by topic.</p></div>`;
+  target.insertAdjacentHTML('afterbegin', note);
+}
+
+function copyPaperPath(id, kind){
+  const paper = examPapers().find(item => item.id === id);
+  if(!paper) return;
+  const path = kind === 'ms' ? (paper.localMarkScheme || paper.markScheme) : (paper.localQuestionPaper || paper.questionPaper);
+  navigator.clipboard?.writeText(path);
+  showPaperDetails(id);
 }
 
 function startChapter(chapterId){ selectedChapterId = chapterId; biteStep = 'overview'; switchView('learn'); setTimeout(() => document.getElementById('lessonDetail')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0); }
