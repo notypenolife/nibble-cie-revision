@@ -96,7 +96,7 @@ function renderHome(){
       <button class="link-button" onclick="showLanding()">Public site</button>
     </header>
     <section class="today-app-card">
-      <div class="nib-mini" aria-hidden="true"></div>
+      <div class="today-dessert-thumb" aria-hidden="true"><img src="assets/nibble-dessert-art.png" alt=""></div>
       <div><p class="eyebrow">${paperName(chapter.paper)}</p><h2>${escapeText(chapter.title)}</h2><p>${escapeText(chapter.summary)}</p><span>6 min</span></div>
       <button class="primary" onclick="startChapter('${chapter.id}')">Continue</button>
     </section>
@@ -221,7 +221,7 @@ window.resetLocalProgress = resetLocalProgress;
 window.showLanding = showLanding;
 
 document.getElementById('getStartedBtn').addEventListener('click', requireApp);
-document.getElementById('loginTopBtn').addEventListener('click', openLogin);
+document.getElementById('loginTopBtn').addEventListener('click', requireApp);
 document.querySelectorAll('.app-nav button').forEach(button => button.addEventListener('click', () => switchView(button.dataset.view)));
 document.getElementById('loginForm').addEventListener('submit', event => {
   event.preventDefault();
@@ -233,4 +233,5 @@ document.getElementById('loginForm').addEventListener('submit', event => {
   enterApp();
 });
 
-if(learner.signedIn){ enterApp(); }
+showLanding();
+
