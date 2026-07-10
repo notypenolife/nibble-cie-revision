@@ -269,3 +269,167 @@ footer {
     align-items: flex-start;
   }
 }
+
+/* Nibble v2 app layer */
+.profile-strip {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.72);
+  border-bottom: 1px solid rgba(216, 184, 148, 0.55);
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  padding: 18px clamp(22px, 5vw, 56px);
+}
+
+.profile-strip h2 {
+  font-size: 1.35rem;
+  margin: 2px 0 0;
+}
+
+.profile-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.profile-stats span {
+  background: var(--rice);
+  border: 1px solid rgba(216, 184, 148, 0.6);
+  border-radius: 16px;
+  box-shadow: var(--tiny-shadow);
+  padding: 10px 14px;
+}
+
+.profile-stats strong {
+  color: #5f8f43;
+  display: block;
+  font-size: 1.2rem;
+}
+
+.login-overlay {
+  align-items: center;
+  background: rgba(47, 42, 38, 0.28);
+  backdrop-filter: blur(10px);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 24px;
+  position: fixed;
+  z-index: 50;
+}
+
+.login-overlay[hidden] {
+  display: none;
+}
+
+.login-card {
+  background: var(--cream);
+  border: 1px solid rgba(216, 184, 148, 0.7);
+  border-radius: 20px;
+  box-shadow: var(--soft-shadow);
+  max-width: 440px;
+  padding: 30px;
+  width: min(100%, 440px);
+}
+
+.login-logo {
+  display: block;
+  margin-bottom: 18px;
+}
+
+.login-card h2 {
+  font-size: 2rem;
+  margin: 0 0 10px;
+}
+
+.login-card label {
+  display: block;
+  font-weight: 800;
+  margin: 18px 0 8px;
+}
+
+.login-card input {
+  background: var(--rice);
+  border: 1px solid rgba(216, 184, 148, 0.8);
+  border-radius: 16px;
+  color: var(--cocoa);
+  font: inherit;
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  width: 100%;
+}
+
+.map-card {
+  position: relative;
+}
+
+.map-card.done {
+  border-color: rgba(140, 203, 94, 0.9);
+}
+
+.map-node {
+  align-items: center;
+  background: var(--matcha);
+  border-radius: 50%;
+  box-shadow: var(--tiny-shadow);
+  color: #18330f;
+  display: flex;
+  font-weight: 900;
+  height: 46px;
+  justify-content: center;
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  width: 46px;
+}
+
+.lesson.done {
+  border-color: rgba(140, 203, 94, 0.9);
+}
+
+.progress-dashboard {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-bottom: 18px;
+}
+
+.progress-dashboard article {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(216, 184, 148, 0.55);
+  border-radius: 20px;
+  box-shadow: var(--tiny-shadow);
+  padding: 22px;
+}
+
+.progress-dashboard h3 {
+  font-size: 2rem;
+  margin: 4px 0 10px;
+}
+
+.plate-bar {
+  background: rgba(216, 184, 148, 0.28);
+  border-radius: 999px;
+  height: 14px;
+  margin: 16px 0;
+  overflow: hidden;
+}
+
+.plate-bar span {
+  background: var(--matcha);
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+}
+
+@media (max-width: 760px) {
+  .profile-strip {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .profile-stats {
+    justify-content: flex-start;
+  }
+}
