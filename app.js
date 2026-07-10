@@ -86,6 +86,18 @@ function showLanding(){
 }
 function requireApp(){ learner.signedIn ? enterApp() : openLogin(); }
 
+function openAppView(view){
+  if(!learner.signedIn){
+    sessionStorage.setItem('nibblePendingView', view);
+    openLogin();
+    return;
+  }
+  activeView = view;
+  enterApp();
+  switchView(view);
+}
+
+
 function setAppTheme(view){
   const appPage = document.getElementById('appPage');
   if(!appPage) return;
@@ -282,10 +294,20 @@ window.nextQuiz = nextQuiz;
 window.resetLocalProgress = resetLocalProgress;
 window.showLanding = showLanding;
 window.switchView = switchView;
+window.openAppView = openAppView;
 
 document.getElementById('getStartedBtn').addEventListener('click', requireApp);
 document.getElementById('loginTopBtn').addEventListener('click', requireApp);
 document.querySelectorAll('.app-nav button').forEach(button => button.addEventListener('click', () => switchView(button.dataset.view)));
+document.querySelectorAll('.public-app-nav button').forEach(button => button.addEventListener('click', () => openAppView(button.dataset.publicView)));
+document.querySelectorAll('.public-app-nav button').forEach(button => button.addEventListener('mouseenter', () => setPublicTheme(button.dataset.publicView)));
+function setPublicTheme(view){
+  const landing = document.getElementById('landingPage');
+  if(!landing) return;
+  landing.classList.remove('landing-home', 'landing-learn', 'landing-practice', 'landing-progress', 'landing-profile');
+  landing.classList.add('landing-' + view);
+  document.querySelectorAll('.public-app-nav button').forEach(btn => btn.classList.toggle('active', btn.dataset.publicView === view));
+}
 document.getElementById('loginForm').addEventListener('submit', event => {
   event.preventDefault();
   learner.name = document.getElementById('learnerName').value.trim() || 'Learner';
@@ -295,6 +317,9 @@ document.getElementById('loginForm').addEventListener('submit', event => {
   enterApp();
 });
 
+setPublicTheme('home');
 showLanding();
+
+
 
 
