@@ -1397,6 +1397,318 @@ window.NIBBLE_EXAM_DATA = {
                          "difficulty":  "hard",
                          "marks":  8,
                          "examTip":  "Always pair test data with expected results."
+                     },
+                     {
+                         "topic":  "hardware",
+                         "id":  "ex-easy-hardware-1",
+                         "markPoints":  [
+                                            "address",
+                                            "next instruction"
+                                        ],
+                         "question":  "State the purpose of the Program Counter.",
+                         "answer":  "It stores the address of the next instruction to be fetched.",
+                         "difficulty":  "easy",
+                         "marks":  2,
+                         "examTip":  "Register answers must say exactly what is stored."
+                     },
+                     {
+                         "topic":  "hardware",
+                         "id":  "ex-normal-hardware-1",
+                         "markPoints":  [
+                                            "PC",
+                                            "MAR",
+                                            "memory",
+                                            "MDR",
+                                            "CIR",
+                                            "incremented"
+                                        ],
+                         "question":  "Describe the fetch stage of the fetch-decode-execute cycle.",
+                         "answer":  "The address in the PC is copied to the MAR. The instruction is fetched from memory into the MDR, then copied to the CIR. The PC is incremented.",
+                         "difficulty":  "normal",
+                         "marks":  5,
+                         "examTip":  "Use register names for precision."
+                     },
+                     {
+                         "topic":  "hardware",
+                         "id":  "ex-hard-hardware-1",
+                         "markPoints":  [
+                                            "frequently used",
+                                            "instructions",
+                                            "data",
+                                            "closer to CPU",
+                                            "faster than RAM",
+                                            "reduces access time"
+                                        ],
+                         "question":  "Explain how cache memory can improve processor performance.",
+                         "answer":  "Cache stores frequently used instructions and data close to the CPU. Accessing cache is faster than RAM, so fewer slow memory accesses are needed, reducing fetch time.",
+                         "difficulty":  "hard",
+                         "marks":  7,
+                         "examTip":  "Explain cause and effect, not just that cache is fast."
+                     },
+                     {
+                         "topic":  "networks",
+                         "id":  "ex-easy-networks-1",
+                         "markPoints":  [
+                                            "small area",
+                                            "large area",
+                                            "one organisation",
+                                            "third party"
+                                        ],
+                         "question":  "State two differences between a LAN and a WAN.",
+                         "answer":  "A LAN covers a small geographical area and is usually owned by one organisation. A WAN covers a large geographical area and may use third-party infrastructure.",
+                         "difficulty":  "easy",
+                         "marks":  2,
+                         "examTip":  "Compare both sides clearly."
+                     },
+                     {
+                         "topic":  "networks",
+                         "id":  "ex-normal-networks-1",
+                         "markPoints":  [
+                                            "split into packets",
+                                            "different routes",
+                                            "reassembled",
+                                            "resilience",
+                                            "efficient"
+                                        ],
+                         "question":  "Explain why packet switching is used when sending data across the internet.",
+                         "answer":  "Data is split into packets. Packets can travel by different routes and are reassembled at the destination. This improves resilience and efficient use of the network.",
+                         "difficulty":  "normal",
+                         "marks":  5,
+                         "examTip":  "Mention both splitting and reassembly."
+                     },
+                     {
+                         "topic":  "networks",
+                         "id":  "ex-hard-networks-1",
+                         "markPoints":  [
+                                            "domain name",
+                                            "IP address",
+                                            "DNS server",
+                                            "HTTPS",
+                                            "encryption",
+                                            "secure",
+                                            "browser",
+                                            "server"
+                                        ],
+                         "question":  "A student types a URL into a browser. Describe the role of DNS and HTTPS in loading the web page.",
+                         "answer":  "DNS translates the domain name into an IP address. HTTPS uses HTTP with encryption/security, helping protect the data exchanged between browser and server.",
+                         "difficulty":  "hard",
+                         "marks":  8,
+                         "examTip":  "Keep protocols separate: DNS finds the address, HTTPS transfers securely."
+                     },
+                     {
+                         "topic":  "security",
+                         "id":  "ex-easy-security-1",
+                         "markPoints":  [
+                                            "checks data",
+                                            "reasonable",
+                                            "rules"
+                                        ],
+                         "question":  "Define validation.",
+                         "answer":  "Validation checks whether data is reasonable or follows rules before it is accepted.",
+                         "difficulty":  "easy",
+                         "marks":  2,
+                         "examTip":  "Do not confuse validation with verification."
+                     },
+                     {
+                         "topic":  "security",
+                         "id":  "ex-normal-security-1",
+                         "markPoints":  [
+                                            "identity",
+                                            "username",
+                                            "password",
+                                            "allowed",
+                                            "access"
+                                        ],
+                         "question":  "Explain the difference between authentication and authorisation.",
+                         "answer":  "Authentication checks identity, such as username and password. Authorisation checks what the user is allowed to access or do after identity is confirmed.",
+                         "difficulty":  "normal",
+                         "marks":  5,
+                         "examTip":  "Identity first, permissions second."
+                     },
+                     {
+                         "topic":  "security",
+                         "id":  "ex-hard-security-1",
+                         "markPoints":  [
+                                            "authentication",
+                                            "encryption",
+                                            "backups",
+                                            "access levels",
+                                            "recovery",
+                                            "restrict access"
+                                        ],
+                         "question":  "A school stores student records. Explain three security measures that could protect the data.",
+                         "answer":  "Passwords or multi-factor authentication restrict access. Encryption protects data if intercepted or stolen. Backups allow recovery after loss or ransomware. Access levels limit users to required data.",
+                         "difficulty":  "hard",
+                         "marks":  7,
+                         "examTip":  "For each measure, explain how it protects the data."
+                     },
+                     {
+                         "topic":  "databases",
+                         "id":  "ex-easy-db-1",
+                         "markPoints":  [
+                                            "field",
+                                            "uniquely identifies",
+                                            "record"
+                                        ],
+                         "question":  "What is a primary key?",
+                         "answer":  "A field that uniquely identifies each record in a table.",
+                         "difficulty":  "easy",
+                         "marks":  2,
+                         "examTip":  "Use the word unique."
+                     },
+                     {
+                         "topic":  "databases",
+                         "id":  "ex-normal-db-1",
+                         "markPoints":  [
+                                            "links tables",
+                                            "primary key",
+                                            "relationship",
+                                            "reduces duplication",
+                                            "foreign key"
+                                        ],
+                         "question":  "Explain why a foreign key is used in a relational database.",
+                         "answer":  "A foreign key links a record in one table to the primary key in another table. It creates relationships and reduces data duplication.",
+                         "difficulty":  "normal",
+                         "marks":  5,
+                         "examTip":  "Say which key it links to."
+                     },
+                     {
+                         "topic":  "databases",
+                         "id":  "ex-hard-db-1",
+                         "markPoints":  [
+                                            "separates tables",
+                                            "reduces duplication",
+                                            "consistency",
+                                            "update anomalies",
+                                            "stored once",
+                                            "references"
+                                        ],
+                         "question":  "A library database has BOOK and LOAN tables. Explain why normalisation would be useful.",
+                         "answer":  "Normalisation separates data into related tables to reduce duplication, improve consistency and reduce update anomalies. Book details are stored once and loan records reference them.",
+                         "difficulty":  "hard",
+                         "marks":  8,
+                         "examTip":  "Use database benefits, then link to the scenario."
+                     },
+                     {
+                         "topic":  "algorithms",
+                         "id":  "ex-normal-alg-2",
+                         "markPoints":  [
+                                            "input",
+                                            "total",
+                                            "sentinel",
+                                            "-1",
+                                            "loop",
+                                            "stop"
+                                        ],
+                         "question":  "Complete a trace table for an algorithm that repeatedly adds input numbers until -1 is entered.",
+                         "answer":  "Track each input, update total only when input is not -1, and stop when sentinel value -1 is entered.",
+                         "difficulty":  "normal",
+                         "marks":  6,
+                         "examTip":  "Trace every variable after each line that changes it."
+                     },
+                     {
+                         "topic":  "algorithms",
+                         "id":  "ex-hard-alg-2",
+                         "markPoints":  [
+                                            "Found flag",
+                                            "Index",
+                                            "WHILE",
+                                            "bounds",
+                                            "comparison",
+                                            "sets found",
+                                            "increments",
+                                            "outputs found/not found"
+                                        ],
+                         "question":  "Write pseudocode for a linear search through Names[1:100] for TargetName. Output Found or Not found.",
+                         "answer":  "Found \u003c- FALSE\\nIndex \u003c- 1\\nWHILE Index \u003c= 100 AND Found = FALSE\\n IF Names[Index] = TargetName THEN\\n  Found \u003c- TRUE\\n ELSE\\n  Index \u003c- Index + 1\\n ENDIF\\nENDWHILE\\nIF Found THEN OUTPUT \"Found\" ELSE OUTPUT \"Not found\" ENDIF",
+                         "difficulty":  "hard",
+                         "marks":  9,
+                         "examTip":  "Use a flag so the loop can stop early."
+                     },
+                     {
+                         "topic":  "programming",
+                         "id":  "ex-easy-programming-2",
+                         "markPoints":  [
+                                            "sequence",
+                                            "selection",
+                                            "iteration"
+                                        ],
+                         "question":  "State the three basic programming constructs.",
+                         "answer":  "Sequence, selection and iteration.",
+                         "difficulty":  "easy",
+                         "marks":  3,
+                         "examTip":  "These words appear often in Paper 2."
+                     },
+                     {
+                         "topic":  "programming",
+                         "id":  "ex-hard-programming-2",
+                         "markPoints":  [
+                                            "PROCEDURE",
+                                            "parameters",
+                                            "types",
+                                            "assignment",
+                                            "adds points",
+                                            "output",
+                                            "ENDPROCEDURE"
+                                        ],
+                         "question":  "Write pseudocode for a procedure AddPoints that takes PlayerName and Points and updates TotalScore.",
+                         "answer":  "PROCEDURE AddPoints(PlayerName : STRING, Points : INTEGER)\\n TotalScore \u003c- TotalScore + Points\\n OUTPUT PlayerName, TotalScore\\nENDPROCEDURE",
+                         "difficulty":  "hard",
+                         "marks":  9,
+                         "examTip":  "Use the Cambridge procedure structure and parameters."
+                     },
+                     {
+                         "topic":  "arrays",
+                         "id":  "ex-normal-arrays-2",
+                         "markPoints":  [
+                                            "outer loop",
+                                            "inner loop",
+                                            "row bounds",
+                                            "column bounds",
+                                            "outputs array item"
+                                        ],
+                         "question":  "A 2D array Grid[1:5,1:5] stores integers. Write pseudocode to output every value.",
+                         "answer":  "FOR Row \u003c- 1 TO 5\\n FOR Col \u003c- 1 TO 5\\n  OUTPUT Grid[Row, Col]\\n NEXT Col\\nNEXT Row",
+                         "difficulty":  "normal",
+                         "marks":  6,
+                         "examTip":  "Nested loops are normally needed for 2D arrays."
+                     },
+                     {
+                         "topic":  "testing",
+                         "id":  "ex-easy-testing-2",
+                         "markPoints":  [
+                                            "normal",
+                                            "boundary",
+                                            "erroneous",
+                                            "50",
+                                            "0",
+                                            "100",
+                                            "-1",
+                                            "101"
+                                        ],
+                         "question":  "Give one normal, one boundary and one erroneous value for a percentage mark 0 to 100.",
+                         "answer":  "Normal: 50. Boundary: 0 or 100. Erroneous: -1 or 101.",
+                         "difficulty":  "easy",
+                         "marks":  3,
+                         "examTip":  "Use values from inside, at the edge, and outside the range."
+                     },
+                     {
+                         "topic":  "files",
+                         "id":  "ex-hard-files-2",
+                         "markPoints":  [
+                                            "open read",
+                                            "open write",
+                                            "EOF loop",
+                                            "read line",
+                                            "write line",
+                                            "close old",
+                                            "close new"
+                                        ],
+                         "question":  "Write pseudocode to copy every line from OldFile.txt to NewFile.txt.",
+                         "answer":  "OPENFILE \"OldFile.txt\" FOR READ\\nOPENFILE \"NewFile.txt\" FOR WRITE\\nWHILE NOT EOF(\"OldFile.txt\")\\n READFILE \"OldFile.txt\", Line\\n WRITEFILE \"NewFile.txt\", Line\\nENDWHILE\\nCLOSEFILE \"OldFile.txt\"\\nCLOSEFILE \"NewFile.txt\"",
+                         "difficulty":  "hard",
+                         "marks":  9,
+                         "examTip":  "Open both files in the correct modes."
                      }
                  ]
 };
