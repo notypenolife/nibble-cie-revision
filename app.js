@@ -160,6 +160,7 @@ function renderApp(){
   renderHome();
   renderLearn();
   renderPractice();
+  renderExam();
   renderProgress();
   renderProfile();
 }
